@@ -32,7 +32,6 @@ public class EquipmentManager : MonoBehaviour {
         {
             Item temp = Inventory.inventory.GetItemInSlot(i);
             if (temp.name != "") {
-                print((int)temp.equipSlot);
                 for (int j = 0; j < Database.EquipPointLookup[(int)temp.equipSlot].Count; j++)
                 {
                     switch (Database.EquipPointLookup[(int)temp.equipSlot][j])

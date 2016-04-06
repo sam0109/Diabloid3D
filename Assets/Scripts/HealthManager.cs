@@ -11,11 +11,14 @@ public class HealthManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         image_target = gameObject.GetComponent<Image>();
-        SetHealth(1);
     }
 	
     public void SetHealth(float healthNormalized)
     {
+        if(image_target == null)
+        {
+            image_target = gameObject.GetComponent<Image>();
+        }
         transform.localScale = new Vector3(healthNormalized, 1, 1);
         image_target.color = Color.Lerp(minColor, maxColor, transform.localScale.x);
     }

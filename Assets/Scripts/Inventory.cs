@@ -12,6 +12,7 @@ public class Inventory : MonoBehaviour {
     private List<Item> myItems { get; set; }
     private List<Slot> slots { get; set; }
     private EquipmentManager equipManager;
+    private PlayerManager playerManager;
 
     // Use this for initialization
     void Awake()
@@ -32,13 +33,62 @@ public class Inventory : MonoBehaviour {
         myItems[10] = Database.myDatabase.GetItem("Sword9");  //temporary item maker for testing
         myItems[11] = Database.myDatabase.GetItem("Helmet1");  //temporary item maker for testing
 
+        equipManager = GameObject.FindGameObjectWithTag("Player").GetComponent<EquipmentManager>();
+        equipManager.UpdateModels();
+        playerManager = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
+        playerManager.UpdateItemStats();
+    }
+
+    public bool SwapItems(int slotA, int slotB)
+    {
+        if(slotA < slots.Count && slotB < slots.Count && slotA >= 0 && slotB >= 0)
+        {
+            if (slotB < paperDoll.Length && (int)myItems[slotA].equipSlot != slotB)
+            {
+                return false;
+            }
+
+            Item temp = myItems[slotB];
+            myItems[slotB] = new Item(myItems[slotA]);
+            myItems[slotA] = temp;
+            slots[slotA].SetImage(myItems[slotA].image);
+            slots[slotB].SetImage(myItems[slotB].image);
+
+            if(slotA < paperDoll.Length || slotB < paperDoll.Length)
+            {
+                equipManager.UpdateModels();
+                playerManager.UpdateItemStats();
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public Item GetItemInSlot(int slot)
+    {
+        if(slot >= 0 && slot < slots.Count)
+        {
+            return new Item(myItems[slot]);
+        }
+        else
+        {
+            return new Item();
+        }
+    }
+
+    public void GenerateUI()
+    {
         int slotsSoFar = 0; //a running counter for how many slots have been used
 
         /*********************************/
         /*     create the paper doll     */
         /*********************************/
 
-        foreach(GameObject slotObject in paperDoll)
+        foreach (GameObject slotObject in paperDoll)
         {
             Slot newSlot = slotObject.GetComponent<Slot>();
             newSlot.slotIndex = slotsSoFar;
@@ -67,43 +117,5 @@ public class Inventory : MonoBehaviour {
         }
         inventoryTransform.offsetMax = new Vector2(0, 0);
         inventoryTransform.offsetMin = new Vector2(0, -i - centeringOffset * 2);
-
-        equipManager = GameObject.FindGameObjectWithTag("Player").GetComponent<EquipmentManager>();
-        equipManager.UpdateModels();
-    }
-
-    public bool SwapItems(int slotA, int slotB)
-    {
-        if(slotA < slots.Count && slotB < slots.Count && slotA >= 0 && slotB >= 0)
-        {
-            Item temp = myItems[slotB];
-            myItems[slotB] = new Item(myItems[slotA]);
-            myItems[slotA] = temp;
-            slots[slotA].SetImage(myItems[slotA].image);
-            slots[slotB].SetImage(myItems[slotB].image);
-
-            if(slotA < paperDoll.Length || slotB < paperDoll.Length)
-            {
-                equipManager.UpdateModels();
-            }
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public Item GetItemInSlot(int slot)
-    {
-        if(slot >= 0 && slot < slots.Count)
-        {
-            return new Item(myItems[slot]);
-        }
-        else
-        {
-            return new Item();
-        }
     }
 }

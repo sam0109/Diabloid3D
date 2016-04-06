@@ -8,7 +8,9 @@ public class AICharacterControl : MonoBehaviour
     public NavMeshAgent agent { get; private set; }             // the navmesh agent required for the path finding
     public ThirdPersonCharacterLook character { get; private set; } // the character we are controlling
     public Transform target;                                    // target to aim for
-    
+
+    public float maxHealth;
+    float currentHealth;
 
     bool isAttacking = true;
     public float attackSpeed;
@@ -31,6 +33,7 @@ public class AICharacterControl : MonoBehaviour
         agent.updateRotation = false;
         agent.updatePosition = true;
         attackReload = attackSpeed;
+        currentHealth = maxHealth;
     }
 
     private void Update()
@@ -86,7 +89,6 @@ public class AICharacterControl : MonoBehaviour
         if (target.tag == "Player")
         {
             character.Attack(delegate { AttackCallback(); });   //calls the attack damage calculations at the proper point in the swing
-
         }
     }
 
@@ -99,6 +101,16 @@ public class AICharacterControl : MonoBehaviour
             {
                 ray.collider.gameObject.SendMessage("TakeDamage", attackDamage);
             }
+        }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        print("took " + damage + " damage.");
+        currentHealth -= damage;
+        if(currentHealth <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 }
