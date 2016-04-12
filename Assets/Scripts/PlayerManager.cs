@@ -1,118 +1,131 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
+#pragma warning disable 0649
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : CharacterManager
 {
     public static PlayerManager playerManager;
-    public int baseStrength, baseAgility, baseIntelligence, level;
-    public int totalStrength, totalAgility, totalIntelligence, armor, attackSpeed;
-    public float attackDelay;
-    public int attackDistance;
-    public int attackDamage;
-    int weaponDamage;
 
-    float maxHealth;
-    float currentHealth;
-    HealthManager healthBar;
-    StatsManager statsManager;
+    float m_LookAngle;
     AbilityManager abilityManager;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    new void Start()
+    {
+        base.Start();
         playerManager = this;
-        healthBar = GameObject.FindGameObjectWithTag("UI").GetComponentInChildren<HealthManager>();
-        statsManager = GameObject.FindGameObjectWithTag("UI").GetComponentInChildren<StatsManager>(includeInactive: true);
+        m_LookAngle = 0;
         abilityManager = GameObject.FindGameObjectWithTag("UI").GetComponentInChildren<AbilityManager>(includeInactive: true);
-        RecalculateIntrinsicStats();
-        currentHealth = maxHealth;
-        healthBar.SetHealth(currentHealth / maxHealth);
+
+        Inventory.inventory.inventoryChanged += UpdateItemStats;
     }
 
-    public void MeleeAttack()
+    public override void Update()
     {
-
-    }
-
-    public void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-        healthBar.SetHealth(Mathf.Max(currentHealth / maxHealth, 0));
-    }
-
-    public void UpdateItemStats()
-    {
-        totalAgility = baseAgility;
-        totalIntelligence = baseIntelligence;
-        totalStrength = baseStrength;
-        armor = 0;
-        attackSpeed = 150;
-        attackDistance = 1;
-        weaponDamage = 0;
-
-        bool weaponEquipped = false;
-        for (int i = 0; i < Inventory.inventory.paperDoll.Length; i++)
+        if (attackTimer > 0)
         {
-            Item temp = Inventory.inventory.GetItemInSlot(i);
-            switch (temp.itemType)
+            attackTimer -= Time.deltaTime;
+        }
+        if (Input.GetKeyDown(KeyCode.E) && attackTimer <= 0)
+        {
+            attackTimer = attackDelay;
+            Attack();
+        }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Interact();
+        }
+    }
+    
+    private void Interact()
+    {
+        RaycastHit ray;
+        if (Physics.Raycast(transform.position + transform.up * .5f, transform.forward, out ray, 1))
+        {
+            ray.collider.gameObject.SendMessage("Interacted", SendMessageOptions.DontRequireReceiver);
+            print("Interacting with " + ray.collider.gameObject.name);
+        }
+    }
+
+    // Fixed update is called in sync with physics
+    private void FixedUpdate()
+    {
+        // read inputs
+        float hMove = CrossPlatformInputManager.GetAxis("Horizontal");
+        float vMove = CrossPlatformInputManager.GetAxis("Vertical");
+        float hLook = CrossPlatformInputManager.GetAxis("HorizontalLook");
+        float vLook = CrossPlatformInputManager.GetAxis("VerticalLook");
+
+        if (hLook != 0 || vLook != 0)
+        {
+            m_LookAngle = Mathf.Atan2(hLook, vLook);
+        }
+
+        // pass all parameters to the character control script
+        Move(new Vector2(hMove, vMove).normalized, m_LookAngle);
+    }
+
+    public void UpdateItemStats(bool paperDollChanged)
+    {
+        if (paperDollChanged)
+        {
+
+            agilityMod = 0;
+            intMod = 0;
+            strengthMod = 0;
+            armor = 0;
+            attackSpeed = 150;
+            attackDistance = 1;
+            weaponDamage = 0;
+
+            bool weaponEquipped = false;
+            for (int i = 0; i < Inventory.inventory.paperDoll.Length; i++)
             {
-                case (ItemType.Bow):
-                case (ItemType.Axe):
-                case (ItemType.Hammer):
-                case (ItemType.Sword):
-                    if (weaponEquipped)
-                    {
-                        attackDistance = Mathf.Min(attackDistance, temp.range);
-                        attackSpeed = attackSpeed + temp.speed;
-                        weaponDamage = (temp.damage + weaponDamage) / 4; //divide by 2 to average, divide by 2 more to account for extra speed.
-                    }
-                    else
-                    {
-                        attackDistance = temp.range;
-                        attackSpeed = temp.speed;
-                        weaponDamage = temp.damage;
-                    }
-                    weaponEquipped = true;
-                    break;
-                case (ItemType.Body):
-                case (ItemType.Feet):
-                case (ItemType.Hands):
-                case (ItemType.Helmet):
-                case (ItemType.Ring):
-                case (ItemType.Shield):
-                    armor += temp.armor;
-                    totalAgility += temp.agility;
-                    totalIntelligence += temp.intelligence;
-                    totalStrength += temp.strength;
-                    break;
-                case (ItemType.None):
-                    if (temp.name != "")
-                    {
-                        Debug.Log("No item type! Cannot set equipped stats.");
-                    }
-                    break;
-                default:
-                    Debug.Log("Unrecognized item type equipped");
-                    break;
+                Item temp = Inventory.inventory.GetItemInSlot(i);
+                switch (temp.itemType)
+                {
+                    case (ItemType.Bow):
+                    case (ItemType.Axe):
+                    case (ItemType.Hammer):
+                    case (ItemType.Sword):
+                        if (weaponEquipped)
+                        {
+                            attackDistance = Mathf.Min(attackDistance, temp.range);
+                            attackSpeed = attackSpeed + temp.speed;
+                            weaponDamage = (temp.damage + weaponDamage) / 4; //divide by 2 to average, divide by 2 more to account for extra speed.
+                        }
+                        else
+                        {
+                            attackDistance = temp.range;
+                            attackSpeed = temp.speed;
+                            weaponDamage = temp.damage;
+                        }
+                        weaponEquipped = true;
+                        break;
+                    case (ItemType.Body):
+                    case (ItemType.Feet):
+                    case (ItemType.Hands):
+                    case (ItemType.Helmet):
+                    case (ItemType.Ring):
+                    case (ItemType.Shield):
+                        armor += temp.armor;
+                        agilityMod += temp.agility;
+                        intMod += temp.intelligence;
+                        strengthMod += temp.strength;
+                        break;
+                    case (ItemType.None):
+                        if (temp.name != "")
+                        {
+                            Debug.Log("No item type! Cannot set equipped stats.");
+                        }
+                        break;
+                    default:
+                        Debug.Log("Unrecognized item type equipped");
+                        break;
+                }
             }
+            RecalculateStats(false);
         }
-        RecalculateIntrinsicStats();
-    }
-
-    public void RecalculateIntrinsicStats()
-    {
-        maxHealth = level * (totalStrength + 5);
-        if (attackSpeed <= 10)
-        {
-            attackDelay = 10;
-        }
-        else
-        {
-            attackDelay = 100 / attackSpeed;
-        }
-        if (statsManager)
-        {
-            statsManager.UpdateStats();
-        }
-        attackDamage = weaponDamage + totalStrength;
     }
 }

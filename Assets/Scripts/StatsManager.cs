@@ -11,12 +11,13 @@ public class StatsManager : MonoBehaviour {
 	void Start ()
     {
         UpdateStats();
+        PlayerManager.playerManager.statsChanged += UpdateStats;
 	}
 
     public void UpdateStats()
     {
-        strength.text = "Strength: " + PlayerManager.playerManager.totalStrength;
-        agility.text = "Agility: " + PlayerManager.playerManager.totalAgility;
-        intelligence.text = "Intelligence: " + PlayerManager.playerManager.totalIntelligence;
+        strength.text = "Strength: " + PlayerManager.playerManager.stats.strength + " + " + PlayerManager.playerManager.strengthMod;
+        agility.text = "Agility: " + PlayerManager.playerManager.stats.agility+ " + " + PlayerManager.playerManager.agilityMod;
+        intelligence.text = "Intelligence: " + PlayerManager.playerManager.stats.intelligence + " + " + PlayerManager.playerManager.intMod;
     }
 }

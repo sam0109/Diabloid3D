@@ -212,7 +212,7 @@ public struct ItemInternal
 }
 
 [System.Serializable]
-public class CharacterStats
+public class CharacterStat
 {
-    public int strength, agility, intelligence;
+    public int strength, agility, intelligence, level;
 }

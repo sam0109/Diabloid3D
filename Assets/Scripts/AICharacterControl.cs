@@ -3,42 +3,40 @@ using UnityEngine;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(ThirdPersonCharacterLook))]
-public class AICharacterControl : MonoBehaviour
+public class AICharacterControl : CharacterManager
 {
-    public NavMeshAgent agent { get; private set; }             // the navmesh agent required for the path finding
-    public ThirdPersonCharacterLook character { get; private set; } // the character we are controlling
+    private NavMeshAgent agent;       // the navmesh agent required for the path finding
     public Transform target;                                    // target to aim for
+    public enum NPCType { Shopkeeper, Enemy, Townsperson };
+    public NPCType myType;
 
-    public float maxHealth;
-    float currentHealth;
-
-    bool isAttacking = true;
-    public float attackSpeed;
-    float attackReload;
-
-    public float attackDistance;
-    public float attackDamage;
-
+    public bool friendly;
     public float viewDistance;
-
     private float lookRotation;
-
-    private void Start()
+    new private void Start()
     {
+        base.Start();
         // get the components on the object we need ( should not be null due to require component so no need to check )
         agent = GetComponentInChildren<NavMeshAgent>();
-        character = GetComponent<ThirdPersonCharacterLook>();
         target = GameObject.FindGameObjectWithTag("Player").transform;
 
         agent.updateRotation = false;
         agent.updatePosition = true;
-        attackReload = attackSpeed;
-        currentHealth = maxHealth;
     }
 
-    private void Update()
+    public override void Update()
     {
-        if (target != null)
+        base.Update();
+        if(isDead)
+        {
+            print("sinking");
+            transform.Translate(Vector3.down * 0.005f);  //sink into the ground on death
+            if(transform.position.y <= -1)
+            {
+                Destroy(gameObject);
+            }
+        }
+        else if (target != null)
         {
             if ((target.transform.position - transform.position).magnitude < viewDistance)
             {
@@ -47,34 +45,22 @@ public class AICharacterControl : MonoBehaviour
                 if (agent.remainingDistance > agent.stoppingDistance)
                 {
                     lookRotation = Mathf.Atan2(agent.desiredVelocity.x, agent.desiredVelocity.z);
-                    character.Move(new Vector2(agent.desiredVelocity.x, agent.desiredVelocity.z).normalized, lookRotation, false);
+                    Move(new Vector2(agent.desiredVelocity.x, agent.desiredVelocity.z).normalized, lookRotation);
                 }
                 else
                 {
-                    character.Move(Vector2.zero, lookRotation, false);
-                    if (!isAttacking)   //if we are next to the player and not attacking, then attack
+                    Move(Vector2.zero, lookRotation);
+                    if (attackTimer <= 0 && !friendly)   //if we are next to the player and not attacking, then attack
                     {
-                        isAttacking = true;
-                        Attack(target.gameObject);
-                    }
-                }
-
-                if (isAttacking) //timer for attack delay
-                {
-                    attackReload -= Time.deltaTime;
-                    if (attackReload <= 0)
-                    {
-                        attackReload = attackSpeed;
-                        isAttacking = false;
+                        attackTimer = attackDelay;
+                        Attack();
                     }
                 }
             }
             else
             {
                 agent.SetDestination(transform.position);
-                character.Move(Vector2.zero, lookRotation, false);
-                if (!isAttacking)
-                    isAttacking = true;
+                Move(Vector2.zero, lookRotation);
             }
         }
     }
@@ -84,33 +70,19 @@ public class AICharacterControl : MonoBehaviour
         this.target = target;
     }
 
-    public void Attack(GameObject target)
+    public override void TakeDamage(float damage)
     {
-        if (target.tag == "Player")
+        base.TakeDamage(damage);
+        if (isDead)
         {
-            character.Attack(delegate { AttackCallback(); });   //calls the attack damage calculations at the proper point in the swing
+            agent.enabled = false;
         }
     }
-
-    public void AttackCallback()
+    public void Interacted()
     {
-        RaycastHit ray;
-        if (Physics.Raycast(transform.position, transform.forward, out ray, attackDistance))
+        if (myType == NPCType.Shopkeeper)
         {
-            if (ray.collider.gameObject.tag == "Player")
-            {
-                ray.collider.gameObject.SendMessage("TakeDamage", attackDamage);
-            }
-        }
-    }
-
-    public void TakeDamage(float damage)
-    {
-        print("took " + damage + " damage.");
-        currentHealth -= damage;
-        if(currentHealth <= 0)
-        {
-            Destroy(gameObject);
+            GameObject myPopup = PopupHandler.popupHandler.MakePopup();
         }
     }
 }

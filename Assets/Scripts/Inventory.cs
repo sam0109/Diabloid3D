@@ -8,11 +8,14 @@ public class Inventory : MonoBehaviour {
     public int slotWidth;
     public GameObject[] paperDoll;
     public RectTransform inventoryTransform;
+    public delegate void InventoryChangedHandler(bool paperDollChanged);
+    public event InventoryChangedHandler inventoryChanged;
+    public delegate void CurrencyChangedHandler();
+    public event CurrencyChangedHandler currencyChanged;
 
     private List<Item> myItems { get; set; }
     private List<Slot> slots { get; set; }
-    private EquipmentManager equipManager;
-    private PlayerManager playerManager;
+    public int gold { get; private set; }
 
     // Use this for initialization
     void Awake()
@@ -33,10 +36,24 @@ public class Inventory : MonoBehaviour {
         myItems[10] = Database.myDatabase.GetItem("Sword9");  //temporary item maker for testing
         myItems[11] = Database.myDatabase.GetItem("Helmet1");  //temporary item maker for testing
 
-        equipManager = GameObject.FindGameObjectWithTag("Player").GetComponent<EquipmentManager>();
-        equipManager.UpdateModels();
-        playerManager = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
-        playerManager.UpdateItemStats();
+        if(inventoryChanged != null)
+        {
+            inventoryChanged(true);
+        }
+        PlayerManager.playerManager.ResetHealth();
+    }
+
+    public void changeGold(int amount)
+    {
+        gold += amount;
+        if (gold < 0)
+        {
+            gold = 0;
+        }
+        if (currencyChanged != null)
+        {
+            currencyChanged();
+        }
     }
 
     public bool SwapItems(int slotA, int slotB)
@@ -56,8 +73,17 @@ public class Inventory : MonoBehaviour {
 
             if(slotA < paperDoll.Length || slotB < paperDoll.Length)
             {
-                equipManager.UpdateModels();
-                playerManager.UpdateItemStats();
+                if (inventoryChanged != null)
+                {
+                    inventoryChanged(true);
+                }
+            }
+            else
+            {
+                if (inventoryChanged != null)
+                {
+                    inventoryChanged(false);
+                }
             }
 
             return true;
