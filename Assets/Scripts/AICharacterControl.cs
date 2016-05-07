@@ -9,7 +9,7 @@ public class AICharacterControl : CharacterManager
     public Transform target;                                    // target to aim for
     public enum NPCType { Shopkeeper, Enemy, Townsperson };
     public NPCType myType;
-
+    public GameObject myPopup;
     public bool friendly;
     public float viewDistance;
     private float lookRotation;
@@ -18,7 +18,10 @@ public class AICharacterControl : CharacterManager
         base.Start();
         // get the components on the object we need ( should not be null due to require component so no need to check )
         agent = GetComponentInChildren<NavMeshAgent>();
-        target = GameObject.FindGameObjectWithTag("Player").transform;
+        if (myType == NPCType.Enemy)
+        {
+            target = GameObject.FindGameObjectWithTag("Player").transform;
+        }
 
         agent.updateRotation = false;
         agent.updatePosition = true;
@@ -29,7 +32,6 @@ public class AICharacterControl : CharacterManager
         base.Update();
         if(isDead)
         {
-            print("sinking");
             transform.Translate(Vector3.down * 0.005f);  //sink into the ground on death
             if(transform.position.y <= -1)
             {
@@ -82,7 +84,12 @@ public class AICharacterControl : CharacterManager
     {
         if (myType == NPCType.Shopkeeper)
         {
-            GameObject myPopup = PopupHandler.popupHandler.MakePopup();
+            if (myPopup)
+            {
+                Destroy(myPopup);
+            }
+            myPopup = PopupHandler.popupHandler.MakePopup(Prefabs.prefabs.shop);
+            myPopup.GetComponent<ShopUI>().myShop = GetComponent<Shop>();
         }
     }
 }

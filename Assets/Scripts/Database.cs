@@ -12,7 +12,7 @@ public class Database : MonoBehaviour {
     Dictionary<string, int> nameLookupTable;
     private string path;
 
-    //{ None, Head, Body, Feet, Hands, Ring, LWeapon, RWeapon }
+    //{ Head, Body, Feet, Hands, Ring, LWeapon, RWeapon, None }
     public static List<List<EquipPoint>> EquipPointLookup = new List<List<EquipPoint>>
     {
         new List<EquipPoint>{EquipPoint.Head}, //Head

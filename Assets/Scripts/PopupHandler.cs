@@ -8,10 +8,21 @@ public class PopupHandler : MonoBehaviour {
 	void Start () {
         popupHandler = this;
 	}
-    public GameObject MakePopup()
+    public GameObject MakePopup(GameObject newPopup)
     {
-        GameObject newPopup = (GameObject)Instantiate(popup, GetComponent<RectTransform>().rect.center, Quaternion.identity);
-        newPopup.transform.SetParent(gameObject.transform, false);
-        return newPopup;
+        GameObject instantiatedPopup;
+
+        if (newPopup == null)
+        {
+            instantiatedPopup = (GameObject)Instantiate(popup, GetComponent<RectTransform>().rect.center, Quaternion.identity);
+        }
+
+        else
+        {
+            instantiatedPopup = (GameObject)Instantiate(newPopup, GetComponent<RectTransform>().rect.center, Quaternion.identity);
+        }
+
+        instantiatedPopup.transform.SetParent(gameObject.transform, false);
+        return instantiatedPopup;
     }
 }

@@ -10,15 +10,19 @@ public class PlayerManager : CharacterManager
     float m_LookAngle;
     AbilityManager abilityManager;
 
+    void Awake()
+    {
+        playerManager = this;
+    }
+
     // Use this for initialization
     new void Start()
     {
         base.Start();
-        playerManager = this;
         m_LookAngle = 0;
         abilityManager = GameObject.FindGameObjectWithTag("UI").GetComponentInChildren<AbilityManager>(includeInactive: true);
 
-        Inventory.inventory.inventoryChanged += UpdateItemStats;
+        ItemManager.manager.myDoll.slotChanged.AddListener(UpdateItemStats);
     }
 
     public override void Update()
@@ -37,7 +41,7 @@ public class PlayerManager : CharacterManager
             Interact();
         }
     }
-    
+
     private void Interact()
     {
         RaycastHit ray;
@@ -66,66 +70,67 @@ public class PlayerManager : CharacterManager
         Move(new Vector2(hMove, vMove).normalized, m_LookAngle);
     }
 
-    public void UpdateItemStats(bool paperDollChanged)
+    public void UpdateItemStats(int slot)
     {
-        if (paperDollChanged)
+        agilityMod = 0;
+        intMod = 0;
+        strengthMod = 0;
+        armor = 0;
+        attackSpeed = 150;
+        attackDistance = 1;
+        weaponDamage = 0;
+
+        bool weaponEquipped = false;
+        for (int i = 0; i < ItemManager.manager.myDoll.ItemCount(); i++)
         {
-
-            agilityMod = 0;
-            intMod = 0;
-            strengthMod = 0;
-            armor = 0;
-            attackSpeed = 150;
-            attackDistance = 1;
-            weaponDamage = 0;
-
-            bool weaponEquipped = false;
-            for (int i = 0; i < Inventory.inventory.paperDoll.Length; i++)
+            Item temp = ItemManager.manager.myDoll.GetItemInSlot(i);
+            switch (temp.itemType)
             {
-                Item temp = Inventory.inventory.GetItemInSlot(i);
-                switch (temp.itemType)
-                {
-                    case (ItemType.Bow):
-                    case (ItemType.Axe):
-                    case (ItemType.Hammer):
-                    case (ItemType.Sword):
-                        if (weaponEquipped)
-                        {
-                            attackDistance = Mathf.Min(attackDistance, temp.range);
-                            attackSpeed = attackSpeed + temp.speed;
-                            weaponDamage = (temp.damage + weaponDamage) / 4; //divide by 2 to average, divide by 2 more to account for extra speed.
-                        }
-                        else
-                        {
-                            attackDistance = temp.range;
-                            attackSpeed = temp.speed;
-                            weaponDamage = temp.damage;
-                        }
+                case (ItemType.Bow):
+                case (ItemType.Axe):
+                case (ItemType.Hammer):
+                case (ItemType.Sword):
+                    if (weaponEquipped)
+                    {
+                        attackDistance = Mathf.Min(attackDistance, temp.range);
+                        attackSpeed = attackSpeed + temp.speed;
+                        weaponDamage = (temp.damage + weaponDamage) / 4; //divide by 2 to average, divide by 2 more to account for extra speed.
+                    }
+                    else
+                    {
+                        attackDistance = temp.range;
+                        attackSpeed = temp.speed;
+                        weaponDamage = temp.damage;
                         weaponEquipped = true;
-                        break;
-                    case (ItemType.Body):
-                    case (ItemType.Feet):
-                    case (ItemType.Hands):
-                    case (ItemType.Helmet):
-                    case (ItemType.Ring):
-                    case (ItemType.Shield):
-                        armor += temp.armor;
-                        agilityMod += temp.agility;
-                        intMod += temp.intelligence;
-                        strengthMod += temp.strength;
-                        break;
-                    case (ItemType.None):
-                        if (temp.name != "")
-                        {
-                            Debug.Log("No item type! Cannot set equipped stats.");
-                        }
-                        break;
-                    default:
-                        Debug.Log("Unrecognized item type equipped");
-                        break;
-                }
+                    }
+                    break;
+                case (ItemType.Body):
+                case (ItemType.Feet):
+                case (ItemType.Hands):
+                case (ItemType.Helmet):
+                case (ItemType.Ring):
+                case (ItemType.Shield):
+                    armor += temp.armor;
+                    agilityMod += temp.agility;
+                    intMod += temp.intelligence;
+                    strengthMod += temp.strength;
+                    break;
+                case (ItemType.None):
+                    if (temp.name != "")
+                    {
+                        Debug.Log("No item type! Cannot set equipped stats.");
+                    }
+                    break;
+                default:
+                    Debug.Log("Unrecognized item type equipped");
+                    break;
             }
-            RecalculateStats(false);
         }
+        RecalculateStats(false);
+    }
+
+    void OnDestroy()
+    {
+        ItemManager.manager.myDoll.slotChanged.RemoveListener(UpdateItemStats);
     }
 }

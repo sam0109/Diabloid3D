@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class Slot : MonoBehaviour {
 
     public int slotIndex;
+    public enum SlotOwner { PaperDoll, Inventory, Shopkeeper };
+    public SlotOwner myOwner;
     public GameObject item;
     private Image myItem;
 

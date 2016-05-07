@@ -30,6 +30,10 @@ public abstract class CharacterManager : MonoBehaviour {
 
     public void Start()
     {
+        attackSpeed = 150;  //initial values for unarmed. Will change if a weapon is loaded / equipped.
+        attackDistance = 1;
+        weaponDamage = 0;
+
         // get the third person character ( this should never be null due to require component )
         m_Character = GetComponent<ThirdPersonCharacterLook>();
         if (gameObject.tag == "Player")
@@ -97,19 +101,14 @@ public abstract class CharacterManager : MonoBehaviour {
     {
         maxHealth = stats.level * (stats.strength + strengthMod + 5);
         attackDamage = weaponDamage + stats.strength + strengthMod;
+
         if(attackDistance == 0)
         {
             attackDistance = 1;
         }
 
-        if (attackSpeed <= 10)
-        {
-            attackDelay = 1.5f;
-        }
-        else
-        {
-            attackDelay = 100f / attackSpeed;
-        }
+        attackDelay = 100f / attackSpeed;
+
         if (statsChanged != null)
         {
             statsChanged();

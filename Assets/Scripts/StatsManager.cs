@@ -11,7 +11,7 @@ public class StatsManager : MonoBehaviour {
 	void Start ()
     {
         UpdateStats();
-        PlayerManager.playerManager.statsChanged += UpdateStats;
+        PlayerManager.playerManager.statsChanged += new CharacterManager.StatsChangeHandler(UpdateStats);
 	}
 
     public void UpdateStats()
@@ -19,5 +19,10 @@ public class StatsManager : MonoBehaviour {
         strength.text = "Strength: " + PlayerManager.playerManager.stats.strength + " + " + PlayerManager.playerManager.strengthMod;
         agility.text = "Agility: " + PlayerManager.playerManager.stats.agility+ " + " + PlayerManager.playerManager.agilityMod;
         intelligence.text = "Intelligence: " + PlayerManager.playerManager.stats.intelligence + " + " + PlayerManager.playerManager.intMod;
+    }
+
+    void OnDestroy()
+    {
+        PlayerManager.playerManager.statsChanged -= new CharacterManager.StatsChangeHandler(UpdateStats);
     }
 }

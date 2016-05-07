@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EquipmentManager : MonoBehaviour {
+public class EquipmentManager : MonoBehaviour
+{
     public Transform head;
     private GameObject currentHead;
     public Transform lBracer;
@@ -20,103 +21,103 @@ public class EquipmentManager : MonoBehaviour {
 
     public void Start()
     {
-        Inventory.inventory.inventoryChanged += UpdateModels;
+        ItemManager.manager.myDoll.slotChanged.AddListener(UpdateModels);
     }
 
-    public void UpdateModels(bool paperDollChanged)
+    public void UpdateModels(int slotsChanged)
     {
-        if (paperDollChanged)
+        Destroy(currentHead);
+        Destroy(currentLBracer);
+        Destroy(currentRBracer);
+        Destroy(currentLWep);
+        Destroy(currentRWep);
+        Destroy(currentLShoulder);
+        Destroy(currentRShoulder);
+        for (int i = 0; i < ItemManager.manager.myDoll.ItemCount(); i++)
         {
-            print("Updating character models");
-            Destroy(currentHead);
-            Destroy(currentLBracer);
-            Destroy(currentRBracer);
-            Destroy(currentLWep);
-            Destroy(currentRWep);
-            Destroy(currentLShoulder);
-            Destroy(currentRShoulder);
-            for (int i = 0; i < Inventory.inventory.paperDoll.Length; i++)
+            Item temp = ItemManager.manager.myDoll.GetItemInSlot(i);
+            if (temp.name != "")
             {
-                Item temp = Inventory.inventory.GetItemInSlot(i);
-                if (temp.name != "")
+                for (int j = 0; j < Database.EquipPointLookup[(int)temp.equipSlot].Count; j++)
                 {
-                    for (int j = 0; j < Database.EquipPointLookup[(int)temp.equipSlot].Count; j++)
+                    switch (Database.EquipPointLookup[(int)temp.equipSlot][j])
                     {
-                        switch (Database.EquipPointLookup[(int)temp.equipSlot][j])
-                        {
-                            case EquipPoint.Head:
-                                if (currentHead)
-                                {
-                                    Destroy(currentHead);
-                                }
+                        case EquipPoint.Head:
+                            if (currentHead)
+                            {
+                                Destroy(currentHead);
+                            }
 
-                                currentHead = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
-                                currentHead.transform.SetParent(head, false);
-                                break;
-                            case EquipPoint.LBracer:
-                                if (currentLBracer)
-                                {
-                                    Destroy(currentLBracer);
-                                }
+                            currentHead = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
+                            currentHead.transform.SetParent(head, false);
+                            break;
+                        case EquipPoint.LBracer:
+                            if (currentLBracer)
+                            {
+                                Destroy(currentLBracer);
+                            }
 
-                                currentLBracer = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
-                                currentLBracer.transform.SetParent(lBracer, false);
-                                break;
-                            case EquipPoint.RBracer:
-                                if (currentRBracer)
-                                {
-                                    Destroy(currentRBracer);
-                                }
+                            currentLBracer = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
+                            currentLBracer.transform.SetParent(lBracer, false);
+                            break;
+                        case EquipPoint.RBracer:
+                            if (currentRBracer)
+                            {
+                                Destroy(currentRBracer);
+                            }
 
-                                currentRBracer = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
-                                currentRBracer.transform.SetParent(rBracer, false);
-                                break;
-                            case EquipPoint.LShoulder:
-                                if (currentLShoulder)
-                                {
-                                    Destroy(currentLShoulder);
-                                }
+                            currentRBracer = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
+                            currentRBracer.transform.SetParent(rBracer, false);
+                            break;
+                        case EquipPoint.LShoulder:
+                            if (currentLShoulder)
+                            {
+                                Destroy(currentLShoulder);
+                            }
 
-                                currentLShoulder = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
-                                currentLShoulder.transform.SetParent(lShoulder, false);
-                                break;
-                            case EquipPoint.RShoulder:
-                                if (currentRShoulder)
-                                {
-                                    Destroy(currentRShoulder);
-                                }
+                            currentLShoulder = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
+                            currentLShoulder.transform.SetParent(lShoulder, false);
+                            break;
+                        case EquipPoint.RShoulder:
+                            if (currentRShoulder)
+                            {
+                                Destroy(currentRShoulder);
+                            }
 
-                                currentRShoulder = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
-                                currentRShoulder.transform.SetParent(rShoulder, false);
-                                break;
-                            case EquipPoint.LWep:
-                                if (currentLWep)
-                                {
-                                    Destroy(currentLWep);
-                                }
+                            currentRShoulder = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
+                            currentRShoulder.transform.SetParent(rShoulder, false);
+                            break;
+                        case EquipPoint.LWep:
+                            if (currentLWep)
+                            {
+                                Destroy(currentLWep);
+                            }
 
-                                currentLWep = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
-                                currentLWep.transform.SetParent(lWep, false);
-                                break;
-                            case EquipPoint.RWep:
-                                if (currentRWep)
-                                {
-                                    Destroy(currentRWep);
-                                }
+                            currentLWep = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
+                            currentLWep.transform.SetParent(lWep, false);
+                            break;
+                        case EquipPoint.RWep:
+                            if (currentRWep)
+                            {
+                                Destroy(currentRWep);
+                            }
 
-                                currentRWep = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
-                                currentRWep.transform.SetParent(rWep, false);
-                                break;
-                            case EquipPoint.Body:
-                                body.GetComponent<SkinnedMeshRenderer>().sharedMesh = temp.modelPrefabs[j].GetComponent<SkinnedMeshRenderer>().sharedMesh;
-                                break;
-                            default:
-                                Debug.Log("Unknown attachment point");
-                                break;
-                        }
+                            currentRWep = (GameObject)Instantiate(temp.modelPrefabs[j], Vector3.zero, Quaternion.identity);
+                            currentRWep.transform.SetParent(rWep, false);
+                            break;
+                        case EquipPoint.Body:
+                            body.GetComponent<SkinnedMeshRenderer>().sharedMesh = temp.modelPrefabs[j].GetComponent<SkinnedMeshRenderer>().sharedMesh;
+                            break;
+                        default:
+                            Debug.Log("Unknown attachment point");
+                            break;
                     }
                 }
             }
         }
+    }
+    void OnDestroy()
+    {
+        ItemManager.manager.myDoll.slotChanged.RemoveListener(UpdateModels);
     }
 }

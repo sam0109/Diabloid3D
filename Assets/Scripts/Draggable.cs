@@ -5,10 +5,11 @@ using UnityEngine.EventSystems;
 
 public class Draggable : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHandler
 {
+    public bool isItem;
     public Transform toMove;
     private Vector2 pointerOffset;
     private RectTransform rectTransform;
-    private RectTransform rectTransformSlot;
+    private RectTransform parentRectTransform;
     private CanvasGroup canvasGroup;
     private RectTransform uiRoot;
 
@@ -17,12 +18,12 @@ public class Draggable : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndD
         if (toMove)
         {
             rectTransform = toMove.GetComponent<RectTransform>();
-            rectTransformSlot = toMove.parent.GetComponent<RectTransform>();
+            parentRectTransform = toMove.parent.GetComponent<RectTransform>();
         }
         else
         {
             rectTransform = transform.GetComponent<RectTransform>();
-            rectTransformSlot = transform.parent.GetComponent<RectTransform>();
+            parentRectTransform = transform.parent.GetComponent<RectTransform>();
         }
         canvasGroup = GetComponent<CanvasGroup>();
         uiRoot = GameObject.FindGameObjectWithTag("UI").GetComponent<RectTransform>();
@@ -31,33 +32,41 @@ public class Draggable : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndD
     public void OnPointerDown(PointerEventData data)
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, data.position, data.pressEventCamera, out pointerOffset);
-        canvasGroup.blocksRaycasts = false;
+        if (canvasGroup)
+        {
+            canvasGroup.blocksRaycasts = false;
+        }
+        SendMessageUpwards("SendToFront", SendMessageOptions.DontRequireReceiver);
     }
 
     public void OnDrag(PointerEventData data)
     {
-        if(transform.parent != uiRoot)
-        {
-            toMove.transform.SetParent(uiRoot);
-        }
-
+        rectTransform.transform.SetParent(uiRoot);
         Vector2 localPointerPosition;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(uiRoot, Input.mousePosition, data.pressEventCamera, out localPointerPosition))
         {
-            toMove.localPosition = localPointerPosition - pointerOffset;
+            rectTransform.localPosition = localPointerPosition - pointerOffset;
         }
     }
 
     public void OnEndDrag(PointerEventData data)
     {
-        toMove.transform.SetParent(rectTransformSlot.transform);
-        canvasGroup.blocksRaycasts = true;
-        if (!toMove)
+        if (canvasGroup)
+        {
+            canvasGroup.blocksRaycasts = true;
+        }
+        rectTransform.transform.SetParent(parentRectTransform.transform);
+        if (isItem)
         {
             rectTransform.anchoredPosition = Vector3.zero;
-            Inventory.inventory.SwapItems(GetComponentInParent<Slot>().slotIndex, data.pointerEnter.GetComponentInParent<Slot>().slotIndex);
+
+            Slot currentSlot = GetComponentInParent<Slot>();
+            ItemHolder currentItemHolder = GetComponentInParent<ItemHolder>();
+
+            Slot newSlot = data.pointerEnter.GetComponentInParent<Slot>();
+            ItemHolder newItemHolder = data.pointerEnter.GetComponentInParent<ItemHolder>();
+
+            ItemManager.manager.SwapItems(currentItemHolder, currentSlot.slotIndex, newItemHolder, newSlot.slotIndex);
         }
     }
-
-
 }
