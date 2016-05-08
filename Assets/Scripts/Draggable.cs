@@ -61,10 +61,10 @@ public class Draggable : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndD
             rectTransform.anchoredPosition = Vector3.zero;
 
             Slot currentSlot = GetComponentInParent<Slot>();
-            ItemHolder currentItemHolder = GetComponentInParent<ItemHolder>();
+            ItemHolder currentItemHolder = GetComponentInParent<ItemHolderUI>().myItemHolder;
 
             Slot newSlot = data.pointerEnter.GetComponentInParent<Slot>();
-            ItemHolder newItemHolder = data.pointerEnter.GetComponentInParent<ItemHolder>();
+            ItemHolder newItemHolder = data.pointerEnter.GetComponentInParent<ItemHolderUI>().myItemHolder;
 
             ItemManager.manager.SwapItems(currentItemHolder, currentSlot.slotIndex, newItemHolder, newSlot.slotIndex);
         }

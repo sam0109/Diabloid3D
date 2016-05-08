@@ -18,8 +18,8 @@ public class ItemManager : MonoBehaviour {
         Item itemB = holderB.GetItemInSlot(slotB);
         if (holderA.CanPlace(itemB, slotA) && holderB.CanPlace(itemA, slotB))
         {
-            holderA.PlaceItem(itemB, slotB);
-            holderB.PlaceItem(itemA, slotA);
+            holderA.PlaceItem(itemB, slotA);
+            holderB.PlaceItem(itemA, slotB);
             return true;
         }
         return false;

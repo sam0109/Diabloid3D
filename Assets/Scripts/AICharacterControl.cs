@@ -89,7 +89,7 @@ public class AICharacterControl : CharacterManager
                 Destroy(myPopup);
             }
             myPopup = PopupHandler.popupHandler.MakePopup(Prefabs.prefabs.shop);
-            myPopup.GetComponent<ShopUI>().myShop = GetComponent<Shop>();
+            myPopup.GetComponent<ShopUI>().myItemHolder = GetComponent<Shop>();
         }
     }
 }

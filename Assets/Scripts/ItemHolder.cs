@@ -9,7 +9,7 @@ public class SlotChanged : UnityEvent<int> { }
 public abstract class ItemHolder : MonoBehaviour {
     public int itemCount;
     public SlotChanged slotChanged;
-    protected List<Item> items;
+    public List<Item> items;
 
     void Awake()
     {
@@ -66,13 +66,7 @@ public abstract class ItemHolder : MonoBehaviour {
 
     public virtual void PlaceItem(Item item, int slot)
     {
-        if (slot >= 0 && slot < items.Count)
-        {
-            items[slot] = item;
-        }
-        else
-        {
-            print("Invalid item index: " + slot);
-        }
+        items[slot] = item;
+        slotChanged.Invoke(slot);
     }
 }
