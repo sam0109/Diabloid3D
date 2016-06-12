@@ -9,10 +9,10 @@ public class AICharacterControl : CharacterManager
     public Transform target;                                    // target to aim for
     public enum NPCType { Shopkeeper, Enemy, Townsperson };
     public NPCType myType;
-    public GameObject myPopup;
     public bool friendly;
     public float viewDistance;
     private float lookRotation;
+    private GameObject myPopup;
     new private void Start()
     {
         base.Start();
@@ -89,7 +89,7 @@ public class AICharacterControl : CharacterManager
                 Destroy(myPopup);
             }
             myPopup = PopupHandler.popupHandler.MakePopup(Prefabs.prefabs.shop);
-            myPopup.GetComponent<ShopUI>().myItemHolder = GetComponent<Shop>();
+            myPopup.GetComponentInChildren<ShopUI>().myItemHolder = GetComponent<Shop>();
         }
     }
 }

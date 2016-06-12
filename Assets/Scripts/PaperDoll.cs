@@ -4,15 +4,22 @@ using System;
 
 public class PaperDoll : ItemHolder {
 
+    new void Awake()
+    {
+        base.Awake();
+        myType = HolderType.PlayerDoll;
+    }
+
     new void Start()
     {
         base.Start();
         PlayerManager.playerManager.ResetHealth();
     }
 
-    public override bool CanPlace(Item item, int slot)
+    public override bool CanPlace(Item item, int slot, ItemHolder source)
     {
-        if (slot >= 0 && slot < items.Count)
+        if (base.CanPlace(item, slot, source) &&
+            (int) item.equipSlot == slot)
         {
             return true;
         }
@@ -21,5 +28,14 @@ public class PaperDoll : ItemHolder {
             print("Invalid item index: " + slot);
             return false;
         }
+    }
+
+    public override void PlaceItem(Item item, int slot, ItemHolder source)
+    {
+        if (source.myType == HolderType.Shop)
+        {
+            ItemManager.manager.myCurrency.addGold(-item.price);
+        }
+        base.PlaceItem(item, slot, source);
     }
 }

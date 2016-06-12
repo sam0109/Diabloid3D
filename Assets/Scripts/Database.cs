@@ -36,7 +36,7 @@ public class Database : MonoBehaviour {
         if (!LoadDatabase())
         {
             print("Failed to load items");
-            ItemInternal newItem = new ItemInternal("Sword1", 0, new int[1] { 0 }, EquipSlot.RWeapon, ItemType.Sword, new int[4] { 1, 2, 3, 4 });
+            ItemInternal newItem = new ItemInternal("Sword1", 0, new int[1] { 0 }, EquipSlot.RWeapon, ItemType.Sword, new int[4] { 1, 2, 3, 4 }, 10);
             itemTable.Add(0, newItem);
             nameLookupTable.Add(newItem.myName, 0);
         }
@@ -66,7 +66,7 @@ public class Database : MonoBehaviour {
                 ItemInternal newItem = JsonUtility.FromJson<ItemInternal>(lines[i]);
                 itemTable.Add(i, newItem);
                 nameLookupTable.Add(newItem.myName, i);
-                print("loaded " + newItem.myName);
+                print("loaded " + newItem.myName + "Costs:" + newItem.myPrice);
             }
             return true;
         }
@@ -109,6 +109,7 @@ public class Item
     public GameObject[] modelPrefabs;
     public EquipSlot equipSlot;
     public ItemType itemType;
+    public int price;
 
     //Weapon properties
     public int damage;
@@ -132,6 +133,7 @@ public class Item
         damage = toCopy.damage;
         speed = toCopy.speed;
         range = toCopy.range;
+        price = toCopy.price;
     }
 
     public Item()
@@ -141,7 +143,7 @@ public class Item
         modelPrefabs = null;
         equipSlot = EquipSlot.None;
         itemType = ItemType.None;
-        strength = intelligence = agility = armor = damage = speed = range = 0;
+        strength = intelligence = agility = armor = damage = speed = range = price = 0;
     }
 
     public Item(ItemInternal itemInternal)
@@ -153,6 +155,7 @@ public class Item
         {
             modelPrefabs[i] = Database.myDatabase.models[itemInternal.myModels[i]];
         }
+        price = itemInternal.myPrice;
         equipSlot = itemInternal.myEquipSlot;
         itemType = itemInternal.myItemType;
         switch (itemType)
@@ -199,8 +202,9 @@ public struct ItemInternal
     public EquipSlot myEquipSlot;
     public ItemType myItemType;
     public int[] myItemProperties;
+    public int myPrice;
 
-    public ItemInternal(string name, int image, int[] models, EquipSlot equipSlot, ItemType itemType, int[] itemProperties)
+    public ItemInternal(string name, int image, int[] models, EquipSlot equipSlot, ItemType itemType, int[] itemProperties, int price)
     {
         myName = name;
         myImage = image;
@@ -208,6 +212,7 @@ public struct ItemInternal
         myEquipSlot = equipSlot;
         myItemType = itemType;
         myItemProperties = itemProperties;
+        myPrice = price;
     }
 }
 

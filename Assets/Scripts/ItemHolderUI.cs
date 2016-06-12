@@ -25,13 +25,13 @@ public abstract class ItemHolderUI : MonoBehaviour
     {
         if (slot != -1)
         {
-            mySlots[slot].SetImage(ItemManager.manager.myInventory.GetItemInSlot(slot).image);
+            mySlots[slot].SetImage(myItemHolder.GetItemInSlot(slot).image);
         }
         else
         {
             for (int i = 0; i < mySlots.Count; i++)
             {
-                mySlots[i].SetImage(ItemManager.manager.myInventory.GetItemInSlot(i).image);
+                mySlots[i].SetImage(myItemHolder.GetItemInSlot(i).image);
             }
         }
     }

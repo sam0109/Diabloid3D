@@ -4,7 +4,7 @@ using System.Collections;
 
 public class GoldManager : MonoBehaviour {
     public UnityEvent currencyChanged;
-    public int gold;
+    public int gold { get; private set; }
 
     public void Awake()
     {
@@ -17,10 +17,10 @@ public class GoldManager : MonoBehaviour {
     public void addGold(int amount)
     {
         gold += amount;
-        if (gold < 0)
+        /*if (gold < 0)
         {
             gold = 0;
-        }
+        }*/
         currencyChanged.Invoke();
     }
 

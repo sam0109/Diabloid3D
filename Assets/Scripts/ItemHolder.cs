@@ -10,8 +10,10 @@ public abstract class ItemHolder : MonoBehaviour {
     public int itemCount;
     public SlotChanged slotChanged;
     public List<Item> items;
+    public enum HolderType { PlayerInventory, PlayerDoll, Shop};
+    public HolderType myType;
 
-    void Awake()
+    public void Awake()
     {
         items = new List<Item>();
         if (slotChanged == null)
@@ -51,7 +53,7 @@ public abstract class ItemHolder : MonoBehaviour {
         return items;
     }
 
-    public virtual bool CanPlace(Item item, int slot)
+    public virtual bool CanPlace(Item item, int slot, ItemHolder source)
     {
         if (slot >= 0 && slot < items.Count)
         {
@@ -64,7 +66,7 @@ public abstract class ItemHolder : MonoBehaviour {
         }
     }
 
-    public virtual void PlaceItem(Item item, int slot)
+    public virtual void PlaceItem(Item item, int slot, ItemHolder source)
     {
         items[slot] = item;
         slotChanged.Invoke(slot);
