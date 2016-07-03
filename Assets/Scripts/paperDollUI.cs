@@ -9,7 +9,7 @@ public class paperDollUI : ItemHolderUI
     void Awake()
     {
         myItemHolder = ItemManager.manager.myDoll;
-        myType = Slot.SlotOwner.PaperDoll;
+        myType = WindowType.PlayerDoll;
     }
 
     protected override void UpdateUI(int slot)
@@ -38,7 +38,7 @@ public class paperDollUI : ItemHolderUI
         for (int i = 0; i < ItemManager.manager.myDoll.ItemCount(); i++)
         {
             paperDollSlots[i].slotIndex = i;
-            paperDollSlots[i].myOwner = Slot.SlotOwner.PaperDoll;
+            paperDollSlots[i].myType = WindowType.PlayerDoll;
             paperDollSlots[i].SetImage(items[i].image);
         }
     }

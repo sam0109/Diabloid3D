@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-
 [System.Serializable]
 public class SlotChanged : UnityEvent<int> { }
 
@@ -10,8 +9,7 @@ public abstract class ItemHolder : MonoBehaviour {
     public int itemCount;
     public SlotChanged slotChanged;
     public List<Item> items;
-    public enum HolderType { PlayerInventory, PlayerDoll, Shop};
-    public HolderType myType;
+    public WindowType myType;
 
     public void Awake()
     {

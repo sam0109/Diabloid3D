@@ -44,11 +44,13 @@ public class PlayerManager : CharacterManager
 
     private void Interact()
     {
-        RaycastHit ray;
-        if (Physics.Raycast(transform.position + transform.up * .5f, transform.forward, out ray, 1))
         {
-            ray.collider.gameObject.SendMessage("Interacted", SendMessageOptions.DontRequireReceiver);
-            print("Interacting with " + ray.collider.gameObject.name);
+            RaycastHit ray;
+            if (Physics.Raycast(transform.position + transform.up * .5f, transform.forward, out ray, 1))
+            {
+                ray.collider.gameObject.SendMessageUpwards("Interacted", SendMessageOptions.DontRequireReceiver);
+                print("Interacting with " + ray.collider.gameObject.name);
+            }
         }
     }
 

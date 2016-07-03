@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public abstract class ItemHolderUI : MonoBehaviour
+/// <summary>
+/// manages the display of items in a window
+/// </summary>
+
+public class ItemHolderUI : Window
 {
     public ItemHolder myItemHolder;
     protected List<Slot> mySlots;
-    protected Slot.SlotOwner myType;
 
     //note: we need to set myItemHolder in awake();
 
@@ -20,7 +23,6 @@ public abstract class ItemHolderUI : MonoBehaviour
         myItemHolder.slotChanged.AddListener(UpdateUI);
     }
 
-    // Update is called once per frame
     protected virtual void UpdateUI(int slot)
     {
         if (slot != -1)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public static class Utilities{
     public static int slotWidth = 80;
 
-	public static List<Slot> CreateSlotGrid(RectTransform inventoryTransform, int count, Slot.SlotOwner slotType, List<Item> items = null)
+	public static List<Slot> CreateSlotGrid(RectTransform inventoryTransform, int count, WindowType myType, List<Item> items = null)
     {
         int slotsSoFar = 0; //a running counter for how many slots have been used
         List<Slot> uiSlots = new List<Slot>();
@@ -21,7 +21,7 @@ public static class Utilities{
                 newSlotObject.transform.SetParent(inventoryTransform, false);
                 Slot newSlot = newSlotObject.GetComponent<Slot>();
                 newSlot.slotIndex = slotsSoFar;
-                newSlot.myOwner = slotType;
+                newSlot.myType = myType;
                 if (items != null && items.Count > slotsSoFar)
                 {
                     newSlot.SetImage(items[slotsSoFar].image);

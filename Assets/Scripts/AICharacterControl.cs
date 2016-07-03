@@ -12,7 +12,6 @@ public class AICharacterControl : CharacterManager
     public bool friendly;
     public float viewDistance;
     private float lookRotation;
-    private GameObject myPopup;
     new private void Start()
     {
         base.Start();
@@ -78,18 +77,6 @@ public class AICharacterControl : CharacterManager
         if (isDead)
         {
             agent.enabled = false;
-        }
-    }
-    public void Interacted()
-    {
-        if (myType == NPCType.Shopkeeper)
-        {
-            if (myPopup)
-            {
-                Destroy(myPopup);
-            }
-            myPopup = PopupHandler.popupHandler.MakePopup(Prefabs.prefabs.shop);
-            myPopup.GetComponentInChildren<ShopUI>().myItemHolder = GetComponent<Shop>();
         }
     }
 }

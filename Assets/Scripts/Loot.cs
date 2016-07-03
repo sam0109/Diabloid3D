@@ -1,21 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
-using System.Collections.Generic;
 
-public class Shop : ItemHolder {
+public class Loot : ItemHolder {
 
     new void Awake()
     {
         base.Awake();
-        myType = WindowType.Shop;
+        myType = WindowType.Loot;
     }
 
     public override bool CanPlace(Item item, int slot, ItemHolder source)
     {
-        if (base.CanPlace(item, slot, source) &&
-            (source.myType == WindowType.PlayerInventory || source.myType == WindowType.PlayerDoll) &&
-            items[slot].name == "")
+        if (items[slot].name == "")
         {
             return true;
         }
@@ -27,13 +23,12 @@ public class Shop : ItemHolder {
 
     public override void PlaceItem(Item item, int slot, ItemHolder source)
     {
-        ItemManager.manager.myCurrency.addGold(item.price);
         base.PlaceItem(item, slot, source);
     }
 
     public void Interacted()
     {
-        GameObject myPopup = WindowHandler.popupHandler.OpenWindowInPopup(gameObject, WindowType.Shop, this);
+        GameObject myPopup = WindowHandler.popupHandler.OpenWindowInPopup(gameObject, WindowType.Loot, this);
         myPopup.GetComponentInChildren<ItemHolderUI>().myItemHolder = GetComponent<Shop>();
     }
 }
