@@ -33,6 +33,7 @@ public class Database : MonoBehaviour {
         nameLookupTable = new Dictionary<string, int>();
         path = Path.Combine(Application.persistentDataPath, "items.data");
         print(path);
+        print(path);
         if (!LoadDatabase())
         {
             print("Failed to load items");
