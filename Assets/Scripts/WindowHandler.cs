@@ -1,46 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public enum WindowType { PlayerInventory, PlayerDoll, Shop, Loot, PlayerStats};
+public enum HolderType { PlayerInventory, PlayerDoll, Shop, Loot, PlayerStats};
 
 public class WindowHandler : MonoBehaviour {
     public static WindowHandler popupHandler;
-    Dictionary<GameObject, GameObject> myPopups;    //maps creators to their popups
 
     void Start () {
-        myPopups = new Dictionary<GameObject, GameObject>();
         popupHandler = this;
 	}
 
-    public GameObject OpenWindowInPopup(GameObject creator, WindowType windowType, ItemHolder myHolder)
+    public GameObject OpenWindowInPopup(GameObject creator, HolderType windowType, ItemHolder myHolder)
     {
-        if (myPopups.ContainsKey(creator))
-        {
-            Destroy(myPopups[creator]);
-            myPopups.Remove(creator);
-        }
+        GameObject popup = null;
         switch (windowType)
         {
-            case (WindowType.PlayerDoll):
-                myPopups.Add(creator, MakePopup(Prefabs.prefabs.paperDoll, myHolder));
+            case (HolderType.PlayerDoll):
+                popup = MakePopup(Prefabs.prefabs.paperDoll, myHolder);
                 break;
-            case (WindowType.Loot):
-                myPopups.Add(creator, MakePopup(Prefabs.prefabs.loot, myHolder));
+            case (HolderType.Loot):
+                popup = MakePopup(Prefabs.prefabs.loot, myHolder);
                 break;
-            case (WindowType.PlayerInventory):
-                myPopups.Add(creator, MakePopup(Prefabs.prefabs.inventory, myHolder));
+            case (HolderType.PlayerInventory):
+                popup = MakePopup(Prefabs.prefabs.inventory, myHolder);
                 break;
-            case (WindowType.Shop):
-                myPopups.Add(creator, MakePopup(Prefabs.prefabs.shop, myHolder));
+            case (HolderType.Shop):
+                popup = MakePopup(Prefabs.prefabs.shop, myHolder);
                 break;
-            case (WindowType.PlayerStats):
-                myPopups.Add(creator, MakePopup(Prefabs.prefabs.character, myHolder));
+            case (HolderType.PlayerStats):
+                popup = MakePopup(Prefabs.prefabs.character, myHolder);
                 break;
             default:
                 Debug.Log("Unknown WindowType");
                 break;
         }
-        return myPopups[creator];
+        return popup;
     }
 
     GameObject MakePopup(GameObject newPopup, ItemHolder myItemHolder)
@@ -56,10 +50,11 @@ public class WindowHandler : MonoBehaviour {
         {
             instantiatedPopup = (GameObject)Instantiate(newPopup, GetComponent<RectTransform>().rect.center, Quaternion.identity);
             instantiatedPopup.transform.SetParent(gameObject.transform, false);
-            ItemHolderUI holder = instantiatedPopup.GetComponent<ItemHolderUI>();
+            ItemHolderUI holder = instantiatedPopup.GetComponentInChildren<ItemHolderUI>();
             if(holder != null)
             {
                 holder.myItemHolder = myItemHolder;
+                holder.InitializeItemHolder();
             }
             return instantiatedPopup;
         }

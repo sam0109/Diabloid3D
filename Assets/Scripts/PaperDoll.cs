@@ -7,7 +7,7 @@ public class PaperDoll : ItemHolder {
     new void Awake()
     {
         base.Awake();
-        myType = WindowType.PlayerDoll;
+        myType = HolderType.PlayerDoll;
     }
 
     new void Start()
@@ -32,7 +32,7 @@ public class PaperDoll : ItemHolder {
 
     public override void PlaceItem(Item item, int slot, ItemHolder source)
     {
-        if (source.myType == WindowType.Shop)
+        if (source.myType == HolderType.Shop)
         {
             ItemManager.manager.myCurrency.addGold(-item.price);
         }

@@ -12,7 +12,7 @@ public class ItemHolderUI : Window
 
     //note: we need to set myItemHolder in awake();
 
-    public void Start()
+    public void InitializeItemHolder()
     {
         if(myItemHolder == null)
         {

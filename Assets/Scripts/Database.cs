@@ -33,15 +33,13 @@ public class Database : MonoBehaviour {
         nameLookupTable = new Dictionary<string, int>();
         path = Path.Combine(Application.persistentDataPath, "items.data");
         print(path);
-        print(path);
         if (!LoadDatabase())
         {
             print("Failed to load items");
-            ItemInternal newItem = new ItemInternal("Sword1", 0, new int[1] { 0 }, EquipSlot.RWeapon, ItemType.Sword, new int[4] { 1, 2, 3, 4 }, 10);
+            ItemInternal newItem = new ItemInternal("Sword3", 24, new int[1] { 0 }, EquipSlot.RWeapon, ItemType.Sword, new int[3] { 10, 100, 1 }, 10);
             itemTable.Add(0, newItem);
             nameLookupTable.Add(newItem.myName, 0);
         }
-
     }
 
     public Item GetItem(string name)

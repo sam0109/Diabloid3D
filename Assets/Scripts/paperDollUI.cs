@@ -6,10 +6,9 @@ public class paperDollUI : ItemHolderUI
     void Awake()
     {
         myItemHolder = ItemManager.manager.myDoll;
-        myType = WindowType.PlayerDoll;
+        myType = HolderType.PlayerDoll;
     }
 	
-	// Update is called once per frame
 	protected override void GenerateUI () {
         List<Item> items = myItemHolder.GetItemList();
 
@@ -18,7 +17,6 @@ public class paperDollUI : ItemHolderUI
         for (int i = 0; i < myItemHolder.ItemCount(); i++)
         {
             mySlots[i].slotIndex = i;
-            mySlots[i].myType = WindowType.PlayerDoll;
             mySlots[i].SetImage(items[i].image);
         }
     }
