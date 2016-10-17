@@ -16,7 +16,8 @@ public class ItemManager : MonoBehaviour {
     {
         Item itemA = holderA.GetItemInSlot(slotA);
         Item itemB = holderB.GetItemInSlot(slotB);
-        if ((itemB.name == "" || holderA.CanPlace(itemB, slotA, holderB)) && (itemB.name == "" || holderB.CanPlace(itemA, slotB, holderA)))
+        Debug.Log(itemA.name + " " + itemB.name);
+        if ((itemB.name == "" || holderA.CanPlace(itemB, slotA, holderB)) && (itemA.name == "" || holderB.CanPlace(itemA, slotB, holderA)))
         {
             holderA.PlaceItem(itemB, slotA, holderB);
             holderB.PlaceItem(itemA, slotB, holderA);

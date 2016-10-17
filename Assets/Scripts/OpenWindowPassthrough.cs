@@ -3,7 +3,7 @@ using System.Collections;
 
 //necessary because buttons cannot do multiple arguments in unity. Should replace with generic script.
 public class OpenWindowPassthrough : MonoBehaviour {
-    public WindowType myWindowType;
+    public HolderType myWindowType;
     public GameObject ownerObject;
 
 	public void OpenWindow () {
@@ -15,7 +15,7 @@ public class OpenWindowPassthrough : MonoBehaviour {
                 WindowHandler.popupHandler.OpenWindowInPopup(ownerObject, myWindowType, holder);
                 return;
             }
-            Debug.Log("No such holder found on owner object");
         }
-	}
+        Debug.Log("No such holder found on owner object");
+    }
 }

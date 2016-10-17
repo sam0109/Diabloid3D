@@ -9,7 +9,7 @@ public abstract class ItemHolder : MonoBehaviour {
     public int itemCount;
     public SlotChanged slotChanged;
     public List<Item> items;
-    public WindowType myType;
+    public HolderType myType;
 
     public void Awake()
     {
@@ -20,6 +20,7 @@ public abstract class ItemHolder : MonoBehaviour {
         }
         for (int i = 0; i < itemCount; i++)
         {
+            if (myType == HolderType.PlayerDoll ) Debug.Log("adding item to doll");
             items.Add(new Item());
         }
     }

@@ -63,12 +63,15 @@ public class Draggable : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndD
             Slot currentSlot = GetComponentInParent<Slot>();
             ItemHolder currentItemHolder = GetComponentInParent<ItemHolderUI>().myItemHolder;
 
-            Slot newSlot = data.pointerEnter.GetComponentInParent<Slot>();
-            ItemHolderUI entered = data.pointerEnter.GetComponentInParent<ItemHolderUI>();
-            if (entered != null)
+            if (data.pointerEnter != null)
             {
-                ItemHolder newItemHolder = entered.myItemHolder;
-                ItemManager.manager.SwapItems(currentItemHolder, currentSlot.slotIndex, newItemHolder, newSlot.slotIndex);
+                Slot newSlot = data.pointerEnter.GetComponentInParent<Slot>();
+                ItemHolderUI entered = data.pointerEnter.GetComponentInParent<ItemHolderUI>();
+                if (entered != null)
+                {
+                    ItemHolder newItemHolder = entered.myItemHolder;
+                    ItemManager.manager.SwapItems(currentItemHolder, currentSlot.slotIndex, newItemHolder, newSlot.slotIndex);
+                }
             }
             else
             {

@@ -39,8 +39,8 @@ public abstract class CharacterManager : MonoBehaviour {
         if (gameObject.tag == "Player")
         {
             healthBar = GameObject.FindGameObjectWithTag("UI").GetComponentInChildren<HealthManager>();
+            RecalculateStats(true);
         }
-        RecalculateStats(true);
         isDead = false;
     }
 
