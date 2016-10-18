@@ -6,7 +6,7 @@ public class paperDollUI : ItemHolderUI
     void Awake()
     {
         myItemHolder = ItemManager.manager.myDoll;
-        myType = HolderType.PlayerDoll;
+        myType = InteractableType.PlayerDoll;
     }
 	
 	protected override void GenerateUI () {

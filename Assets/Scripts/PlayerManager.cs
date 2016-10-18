@@ -8,7 +8,6 @@ public class PlayerManager : CharacterManager
     public static PlayerManager playerManager;
 
     float m_LookAngle;
-    AbilityManager abilityManager;
 
     void Awake()
     {
@@ -20,8 +19,6 @@ public class PlayerManager : CharacterManager
     {
         base.Start();
         m_LookAngle = 0;
-        abilityManager = GameObject.FindGameObjectWithTag("UI").GetComponentInChildren<AbilityManager>(includeInactive: true);
-
         ItemManager.manager.myDoll.slotChanged.AddListener(UpdateItemStats);
     }
 

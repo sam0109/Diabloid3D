@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public static class Utilities{
     public static int slotWidth = 80;
 
-	public static List<Slot> CreateSlotGrid(RectTransform inventoryTransform, int count, HolderType myType, List<Item> items = null)
+	public static List<Slot> CreateSlotGrid(RectTransform inventoryTransform, int count, InteractableType myType, List<Item> items = null)
     {
         int slotsSoFar = 0; //a running counter for how many slots have been used
         List<Slot> uiSlots = new List<Slot>();

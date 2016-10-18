@@ -6,7 +6,7 @@ public class Loot : ItemHolder {
     new void Awake()
     {
         base.Awake();
-        myType = HolderType.Loot;
+        myType = InteractableType.Loot;
     }
 
     public override bool CanPlace(Item item, int slot, ItemHolder source)
@@ -28,7 +28,6 @@ public class Loot : ItemHolder {
 
     public void Interacted()
     {
-        GameObject myPopup = WindowHandler.popupHandler.OpenWindowInPopup(gameObject, HolderType.Loot, this);
-        myPopup.GetComponentInChildren<ItemHolderUI>().myItemHolder = GetComponent<Shop>();
+        OpenPopup();
     }
 }

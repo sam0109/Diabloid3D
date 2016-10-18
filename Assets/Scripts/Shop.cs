@@ -8,13 +8,13 @@ public class Shop : ItemHolder {
     new void Awake()
     {
         base.Awake();
-        myType = HolderType.Shop;
+        myType = InteractableType.Shop;
     }
 
     public override bool CanPlace(Item item, int slot, ItemHolder source)
     {
         if (base.CanPlace(item, slot, source) &&
-            (source.myType == HolderType.PlayerInventory || source.myType == HolderType.PlayerDoll) &&
+            (source.myType == InteractableType.PlayerInventory || source.myType == InteractableType.PlayerDoll) &&
             items[slot].name == "")
         {
             return true;
@@ -33,7 +33,6 @@ public class Shop : ItemHolder {
 
     public void Interacted()
     {
-        GameObject myPopup = WindowHandler.popupHandler.OpenWindowInPopup(gameObject, HolderType.Shop, this);
-        myPopup.GetComponentInChildren<ItemHolderUI>().myItemHolder = GetComponent<Shop>();
+        OpenPopup();
     }
 }

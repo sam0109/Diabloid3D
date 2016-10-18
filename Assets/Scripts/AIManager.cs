@@ -3,7 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(ThirdPersonCharacterLook))]
-public class AICharacterControl : CharacterManager
+public class AIManager : CharacterManager
 {
     private NavMeshAgent agent;       // the navmesh agent required for the path finding
     public Transform target;                                    // target to aim for

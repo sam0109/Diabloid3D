@@ -73,7 +73,7 @@ public abstract class CharacterManager : MonoBehaviour {
         if (Physics.Raycast(transform.position + transform.up * .5f, transform.forward, out ray, attackDistance))
         {
             ray.collider.gameObject.SendMessage("TakeDamage", attackDamage, SendMessageOptions.DontRequireReceiver);
-            print("dealt " + attackDamage + " damage");
+            Debug.Log("dealt " + attackDamage + " damage");
         }
 
 #if UNITY_EDITOR

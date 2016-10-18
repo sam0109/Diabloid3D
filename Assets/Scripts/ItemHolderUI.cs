@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 public class ItemHolderUI : Window
 {
+    public ItemHolder myItemHolder;
     [SerializeField]
     protected List<Slot> mySlots;
 

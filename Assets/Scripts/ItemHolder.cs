@@ -5,11 +5,10 @@ using UnityEngine.Events;
 [System.Serializable]
 public class SlotChanged : UnityEvent<int> { }
 
-public abstract class ItemHolder : MonoBehaviour {
+public abstract class ItemHolder : Interactable {
     public int itemCount;
     public SlotChanged slotChanged;
     public List<Item> items;
-    public HolderType myType;
 
     public void Awake()
     {
@@ -20,7 +19,6 @@ public abstract class ItemHolder : MonoBehaviour {
         }
         for (int i = 0; i < itemCount; i++)
         {
-            if (myType == HolderType.PlayerDoll ) Debug.Log("adding item to doll");
             items.Add(new Item());
         }
     }
