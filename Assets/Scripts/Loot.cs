@@ -5,6 +5,7 @@ public class Loot : ItemHolder {
 
     new void Awake()
     {
+        itemCount = 9;
         base.Awake();
         myType = InteractableType.Loot;
     }
@@ -29,5 +30,10 @@ public class Loot : ItemHolder {
     public void Interacted()
     {
         OpenPopup();
+    }
+
+    private void OnMouseDown()
+    {
+        Interacted();
     }
 }

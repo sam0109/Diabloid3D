@@ -7,7 +7,6 @@ public class PaperDoll : ItemHolder {
     new void Awake()
     {
         base.Awake();
-        myType = InteractableType.PlayerDoll;
     }
 
     new void Start()
@@ -18,8 +17,7 @@ public class PaperDoll : ItemHolder {
 
     public override bool CanPlace(Item item, int slot, ItemHolder source)
     {
-        if (base.CanPlace(item, slot, source) &&
-            (int) item.equipSlot == slot)
+        if (base.CanPlace(item, slot, source) && (int) item.equipSlot == slot)
         {
             return true;
         }
@@ -34,7 +32,7 @@ public class PaperDoll : ItemHolder {
     {
         if (source.myType == InteractableType.Shop)
         {
-            ItemManager.manager.myCurrency.addGold(-item.price);
+            ItemManager.manager.playerCurrency.addGold(-item.price);
         }
         base.PlaceItem(item, slot, source);
     }

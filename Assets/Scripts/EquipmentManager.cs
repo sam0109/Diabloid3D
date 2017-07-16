@@ -21,7 +21,7 @@ public class EquipmentManager : MonoBehaviour
 
     public void Start()
     {
-        ItemManager.manager.myDoll.slotChanged.AddListener(UpdateModels);
+        ItemManager.manager.playerDoll.slotChanged.AddListener(UpdateModels);
     }
 
     public void UpdateModels(int slotsChanged)
@@ -33,9 +33,9 @@ public class EquipmentManager : MonoBehaviour
         Destroy(currentRWep);
         Destroy(currentLShoulder);
         Destroy(currentRShoulder);
-        for (int i = 0; i < ItemManager.manager.myDoll.ItemCount(); i++)
+        for (int i = 0; i < ItemManager.manager.playerDoll.ItemCount(); i++)
         {
-            Item temp = ItemManager.manager.myDoll.GetItemInSlot(i);
+            Item temp = ItemManager.manager.playerDoll.GetItemInSlot(i);
             if (temp.name != "")
             {
                 for (int j = 0; j < Database.EquipPointLookup[(int)temp.equipSlot].Count; j++)
@@ -118,6 +118,6 @@ public class EquipmentManager : MonoBehaviour
     }
     void OnDestroy()
     {
-        ItemManager.manager.myDoll.slotChanged.RemoveListener(UpdateModels);
+        ItemManager.manager.playerDoll.slotChanged.RemoveListener(UpdateModels);
     }
 }

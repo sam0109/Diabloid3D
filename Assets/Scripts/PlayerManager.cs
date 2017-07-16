@@ -19,7 +19,7 @@ public class PlayerManager : CharacterManager
     {
         base.Start();
         m_LookAngle = 0;
-        ItemManager.manager.myDoll.slotChanged.AddListener(UpdateItemStats);
+        ItemManager.manager.playerDoll.slotChanged.AddListener(UpdateItemStats);
     }
 
     public override void Update()
@@ -28,9 +28,8 @@ public class PlayerManager : CharacterManager
         {
             attackTimer -= Time.deltaTime;
         }
-        if (Input.GetKeyDown(KeyCode.E) && attackTimer <= 0)
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            attackTimer = attackDelay;
             Attack();
         }
         if (Input.GetKeyDown(KeyCode.F))
@@ -76,13 +75,13 @@ public class PlayerManager : CharacterManager
         strengthMod = 0;
         armor = 0;
         attackSpeed = 150;
-        attackDistance = 1;
-        weaponDamage = 0;
+        weaponReach = 0;
+        weaponDamageMod = 0;
 
         bool weaponEquipped = false;
-        for (int i = 0; i < ItemManager.manager.myDoll.ItemCount(); i++)
+        for (int i = 0; i < ItemManager.manager.playerDoll.ItemCount(); i++)
         {
-            Item temp = ItemManager.manager.myDoll.GetItemInSlot(i);
+            Item temp = ItemManager.manager.playerDoll.GetItemInSlot(i);
             switch (temp.itemType)
             {
                 case (ItemType.Bow):
@@ -91,15 +90,15 @@ public class PlayerManager : CharacterManager
                 case (ItemType.Sword):
                     if (weaponEquipped)
                     {
-                        attackDistance = Mathf.Min(attackDistance, temp.range);
+                        weaponReach = Mathf.Min(weaponReach, temp.range);
                         attackSpeed = attackSpeed + temp.speed;
-                        weaponDamage = (temp.damage + weaponDamage) / 4; //divide by 2 to average, divide by 2 more to account for extra speed.
+                        weaponDamageMod = (temp.damage + weaponDamageMod) / 4; //divide by 2 to average, divide by 2 more to account for extra speed.
                     }
                     else
                     {
-                        attackDistance = temp.range;
+                        weaponReach = temp.range;
                         attackSpeed = temp.speed;
-                        weaponDamage = temp.damage;
+                        weaponDamageMod = temp.damage;
                         weaponEquipped = true;
                     }
                     break;
@@ -130,6 +129,6 @@ public class PlayerManager : CharacterManager
 
     void OnDestroy()
     {
-        ItemManager.manager.myDoll.slotChanged.RemoveListener(UpdateItemStats);
+        ItemManager.manager.playerDoll.slotChanged.RemoveListener(UpdateItemStats);
     }
 }

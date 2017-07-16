@@ -3,9 +3,9 @@ using System.Collections;
 
 public class ItemManager : MonoBehaviour {
     public static ItemManager manager;
-    public Inventory myInventory;
-    public PaperDoll myDoll;
-    public GoldManager myCurrency;
+    public Inventory playerInventory;
+    public PaperDoll playerDoll;
+    public GoldManager playerCurrency;
 
     void Awake()
     {

@@ -10,11 +10,14 @@ public abstract class CharacterManager : MonoBehaviour {
     public int agilityMod { get; protected set; }
     public int intMod { get; protected set; }
     public int armor { get; protected set; }
-    public int attackSpeed { get; protected set; }
+    [SerializeField]
+    public int attackSpeed;
     public float attackDelay { get; protected set; }
-    public int attackDistance { get; protected set; }
+    [SerializeField]
+    public float weaponReach;
+    public float totalReach;
     public int attackDamage { get; protected set; }
-    public int weaponDamage { get; protected set; }
+    public int weaponDamageMod { get; protected set; }
 
     public delegate void StatsChangeHandler();
     public event StatsChangeHandler statsChanged;
@@ -30,17 +33,13 @@ public abstract class CharacterManager : MonoBehaviour {
 
     public void Start()
     {
-        attackSpeed = 150;  //initial values for unarmed. Will change if a weapon is loaded / equipped.
-        attackDistance = 1;
-        weaponDamage = 0;
-
         // get the third person character ( this should never be null due to require component )
         m_Character = GetComponent<ThirdPersonCharacterLook>();
         if (gameObject.tag == "Player")
         {
             healthBar = GameObject.FindGameObjectWithTag("UI").GetComponentInChildren<HealthManager>();
-            RecalculateStats(true);
         }
+        RecalculateStats(true);
         isDead = false;
     }
 
@@ -63,23 +62,24 @@ public abstract class CharacterManager : MonoBehaviour {
 
     public virtual void Attack()
     {
-        attackTimer = attackDelay;
-        m_Character.Attack(delegate { AttackCallback(); });   //calls the attack damage calculations at the proper point in the swing
+        if (attackTimer <= 0)
+        {
+            attackTimer = attackDelay;
+            m_Character.Attack(delegate { AttackCallback(); });   //calls the attack damage calculations at the proper point in the swing
+        }
     }
 
     public virtual void AttackCallback()
     {
         RaycastHit ray;
-        if (Physics.Raycast(transform.position + transform.up * .5f, transform.forward, out ray, attackDistance))
+        if (Physics.Raycast(transform.position + transform.up * .5f, transform.forward, out ray, totalReach))
         {
             ray.collider.gameObject.SendMessage("TakeDamage", attackDamage, SendMessageOptions.DontRequireReceiver);
             Debug.Log("dealt " + attackDamage + " damage");
         }
 
-#if UNITY_EDITOR
         // helper to visualise the ray in the scene view
-        Debug.DrawLine(transform.position + transform.up * .5f, transform.position + transform.forward * attackDistance + transform.up * .5f, Color.white, 1f);
-#endif
+        Debug.DrawLine(transform.position + transform.up * .5f, transform.position + transform.forward * totalReach + transform.up * .5f, Color.white, 1f);
     }
 
     public virtual void TakeDamage(float damage)
@@ -100,12 +100,8 @@ public abstract class CharacterManager : MonoBehaviour {
     public virtual void RecalculateStats(bool resetHealth)
     {
         maxHealth = stats.level * (stats.strength + strengthMod + 5);
-        attackDamage = weaponDamage + stats.strength + strengthMod;
-
-        if(attackDistance == 0)
-        {
-            attackDistance = 1;
-        }
+        attackDamage = weaponDamageMod + stats.strength + strengthMod;
+        totalReach = weaponReach + 0.5f;
 
         attackDelay = 100f / attackSpeed;
 
@@ -113,13 +109,14 @@ public abstract class CharacterManager : MonoBehaviour {
         {
             statsChanged();
         }
+
         if (resetHealth)
         {
             currentHealth = maxHealth;
-        }
-        if (healthBar != null)
-        {
-            healthBar.SetHealth(currentHealth / maxHealth);
+            if (healthBar != null)
+            {
+                healthBar.SetHealth(currentHealth / maxHealth);
+            }
         }
     }
 

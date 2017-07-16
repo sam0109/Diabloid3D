@@ -1,22 +1,23 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
 [RequireComponent(typeof(ThirdPersonCharacterLook))]
 public class AIManager : CharacterManager
 {
-    private NavMeshAgent agent;       // the navmesh agent required for the path finding
+    private UnityEngine.AI.NavMeshAgent agent;       // the navmesh agent required for the path finding
     public Transform target;                                    // target to aim for
     public enum NPCType { Shopkeeper, Enemy, Townsperson };
     public NPCType myType;
     public bool friendly;
     public float viewDistance;
     private float lookRotation;
+
     new private void Start()
     {
         base.Start();
         // get the components on the object we need ( should not be null due to require component so no need to check )
-        agent = GetComponentInChildren<NavMeshAgent>();
+        agent = GetComponentInChildren<UnityEngine.AI.NavMeshAgent>();
         if (myType == NPCType.Enemy)
         {
             target = GameObject.FindGameObjectWithTag("Player").transform;
@@ -26,7 +27,7 @@ public class AIManager : CharacterManager
         agent.updatePosition = true;
     }
 
-    public override void Update()
+    public override void Update()   //the main AI loop, TODO: should become a state machine
     {
         base.Update();
         if(isDead)
@@ -39,23 +40,25 @@ public class AIManager : CharacterManager
         }
         else if (target != null)
         {
-            if ((target.transform.position - transform.position).magnitude < viewDistance)
+            Vector3 vectorToTarget = target.transform.position - transform.position;
+            if (vectorToTarget.magnitude < viewDistance)
             {
                 agent.SetDestination(target.position);
+                lookRotation = Mathf.Atan2(agent.desiredVelocity.x, agent.desiredVelocity.z);
 
                 if (agent.remainingDistance > agent.stoppingDistance)
                 {
-                    lookRotation = Mathf.Atan2(agent.desiredVelocity.x, agent.desiredVelocity.z);
                     Move(new Vector2(agent.desiredVelocity.x, agent.desiredVelocity.z).normalized, lookRotation);
                 }
                 else
                 {
-                    Move(Vector2.zero, lookRotation);
-                    if (attackTimer <= 0 && !friendly)   //if we are next to the player and not attacking, then attack
-                    {
-                        attackTimer = attackDelay;
-                        Attack();
-                    }
+                    Move(Vector2.zero, Mathf.Atan2(vectorToTarget.x, vectorToTarget.z));
+                }
+
+                if (!friendly &&
+                    vectorToTarget.magnitude < totalReach)   //if we are next to the player and not attacking, then attack
+                {
+                    Attack();
                 }
             }
             else

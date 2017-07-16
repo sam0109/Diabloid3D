@@ -11,7 +11,7 @@ public class Slot : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
     {
-        GameObject myItemObject = (GameObject) Instantiate(item, Vector3.zero, Quaternion.identity);
+        GameObject myItemObject = Instantiate(item, Vector3.zero, Quaternion.identity);
         myItemObject.transform.SetParent(transform, false);
         myItem = myItemObject.GetComponent<Image>();
 	}

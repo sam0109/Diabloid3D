@@ -14,7 +14,7 @@ public class Shop : ItemHolder {
     public override bool CanPlace(Item item, int slot, ItemHolder source)
     {
         if (base.CanPlace(item, slot, source) &&
-            (source.myType == InteractableType.PlayerInventory || source.myType == InteractableType.PlayerDoll) &&
+            source.myType == InteractableType.Inventory &&
             items[slot].name == "")
         {
             return true;
@@ -27,12 +27,17 @@ public class Shop : ItemHolder {
 
     public override void PlaceItem(Item item, int slot, ItemHolder source)
     {
-        ItemManager.manager.myCurrency.addGold(item.price);
+        ItemManager.manager.playerCurrency.addGold(item.price);
         base.PlaceItem(item, slot, source);
     }
 
     public void Interacted()
     {
         OpenPopup();
+    }
+
+    private void OnMouseDown()
+    {
+        Interacted();
     }
 }

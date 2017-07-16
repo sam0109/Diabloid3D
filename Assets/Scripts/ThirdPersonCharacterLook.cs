@@ -26,6 +26,7 @@ public class ThirdPersonCharacterLook : MonoBehaviour
         m_Look = 0;
         m_callback = null;
         m_Dead = false;
+        m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
     }
 
     public void Die()
