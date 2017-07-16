@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public enum InteractableType {PlayerDoll, PlayerInventory, PlayerStats, Loot, Shop};
+public enum InteractableType {PaperDoll, Inventory, PlayerStats, Loot, Shop};
 
 public abstract class Interactable : MonoBehaviour {
     public GameObject myPopup;
@@ -11,13 +12,10 @@ public abstract class Interactable : MonoBehaviour {
         if(!myPopup)
         switch (myType)
         {
-            case (InteractableType.PlayerDoll):
-                MakePopup(Prefabs.prefabs.paperDoll);
-                break;
             case (InteractableType.Loot):
                 MakePopup(Prefabs.prefabs.loot);
                 break;
-            case (InteractableType.PlayerInventory):
+            case (InteractableType.Inventory):
                 MakePopup(Prefabs.prefabs.inventory);
                 break;
             case (InteractableType.Shop):
@@ -43,13 +41,16 @@ public abstract class Interactable : MonoBehaviour {
         else
         {
             GameObject UI = GameObject.FindGameObjectWithTag("UI");
-            myPopup = (GameObject)Instantiate(newPopup, UI.GetComponent<RectTransform>().rect.center, Quaternion.identity);
+            myPopup = Instantiate(newPopup, UI.GetComponent<RectTransform>().rect.center, Quaternion.identity);
             myPopup.transform.SetParent(UI.transform, false);
-            ItemHolderUI holder = myPopup.GetComponentInChildren<ItemHolderUI>();
-            if(holder != null)
+            ItemHolderUI[] holderUIs = myPopup.GetComponentsInChildren<ItemHolderUI>();
+            foreach(ItemHolderUI holderUI in holderUIs)
             {
-                holder.myItemHolder = (ItemHolder)this;
-                holder.InitializeItemHolder();
+                if (holderUI.myItemHolder == null)
+                {
+                    holderUI.myItemHolder = (ItemHolder)this;
+                }
+                holderUI.InitializeItemHolder();
             }
         }
     }
