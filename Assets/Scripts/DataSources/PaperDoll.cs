@@ -30,7 +30,7 @@ public class PaperDoll : ItemHolder {
 
     public override void PlaceItem(Item item, int slot, ItemHolder source)
     {
-        if (source.myType == InteractableType.Shop)
+        if (source.myType == WindowDataSourceType.Shop)
         {
             ItemManager.manager.playerCurrency.addGold(-item.price);
         }

@@ -2,13 +2,7 @@
 using System.Collections.Generic;
 
 public class paperDollUI : ItemHolderUI
-{
-    void Awake()
-    {
-        myItemHolder = ItemManager.manager.playerDoll;
-        myType = InteractableType.PaperDoll;
-    }
-	
+{	
 	protected override void GenerateUI () {
         List<Item> items = myItemHolder.GetItemList();
 

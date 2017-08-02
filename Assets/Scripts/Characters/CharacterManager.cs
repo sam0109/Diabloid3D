@@ -12,9 +12,10 @@ public abstract class CharacterManager : MonoBehaviour {
     public int armor { get; protected set; }
     [SerializeField]
     public int attackSpeed;
-    public float attackDelay { get; protected set; }
     [SerializeField]
+    public float attackDelay;
     public float weaponReach;
+    [SerializeField]
     public float totalReach;
     public int attackDamage { get; protected set; }
     public int weaponDamageMod { get; protected set; }
@@ -22,6 +23,7 @@ public abstract class CharacterManager : MonoBehaviour {
     public delegate void StatsChangeHandler();
     public event StatsChangeHandler statsChanged;
 
+    [SerializeField]
     protected float attackTimer;
     [SerializeField]
     float maxHealth;

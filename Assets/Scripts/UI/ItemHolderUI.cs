@@ -5,19 +5,21 @@ using System.Collections.Generic;
 /// manages the display of items in a window
 /// </summary>
 
-public class ItemHolderUI : Window
+public class ItemHolderUI : WindowComponent
 {
     public ItemHolder myItemHolder;
     [SerializeField]
     protected List<Slot> mySlots;
 
-    //note: we need to set myItemHolder in awake();
-
-    public void InitializeItemHolder()
+    public override void InitializeComponent()
     {
-        if(myItemHolder == null)
-        {
-            print("Set myItemHolder!");
+        if(myDataSource == null){
+            Debug.LogError("myDataSource is null!");
+            return;
+        }
+        myItemHolder = (ItemHolder) myDataSource;
+        if(myItemHolder == null){
+            Debug.LogError("myDataSource is not of the ItemHolderType!");
             return;
         }
         GenerateUI();

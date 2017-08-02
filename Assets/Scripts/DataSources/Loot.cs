@@ -7,7 +7,7 @@ public class Loot : ItemHolder {
     {
         itemCount = 9;
         base.Awake();
-        myType = InteractableType.Loot;
+        myType = WindowDataSourceType.Loot;
     }
 
     public override bool CanPlace(Item item, int slot, ItemHolder source)
@@ -27,13 +27,8 @@ public class Loot : ItemHolder {
         base.PlaceItem(item, slot, source);
     }
 
-    public void Interacted()
-    {
-        OpenPopup();
-    }
-
     private void OnMouseDown()
     {
-        Interacted();
+        WindowManager.windowManager.toggleWindowWithDataSource(this);
     }
 }

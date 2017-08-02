@@ -8,7 +8,7 @@ public class Inventory : ItemHolder
     new void Awake()
     {
         base.Awake();
-        myType = InteractableType.Inventory;
+        myType = WindowDataSourceType.Inventory;
     }
 
     new void Start()
@@ -22,7 +22,7 @@ public class Inventory : ItemHolder
     public override bool CanPlace(Item item, int slot, ItemHolder source)
     {
         if (base.CanPlace(item, slot, source) &&
-            (source.myType != InteractableType.Shop || ItemManager.manager.playerCurrency.gold >= item.price))
+            (source.myType != WindowDataSourceType.Shop || ItemManager.manager.playerCurrency.gold >= item.price))
         {
             return true;
         }
@@ -34,7 +34,7 @@ public class Inventory : ItemHolder
 
     public override void PlaceItem(Item item, int slot, ItemHolder source)
     {
-        if (source.myType == InteractableType.Shop)
+        if (source.myType == WindowDataSourceType.Shop)
         {
             ItemManager.manager.playerCurrency.addGold(-item.price);
         }

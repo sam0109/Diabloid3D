@@ -17,6 +17,7 @@ public class PlayerManager : CharacterManager
     // Use this for initialization
     new void Start()
     {
+        UpdateItemStats(0);
         base.Start();
         m_LookAngle = 0;
         ItemManager.manager.playerDoll.slotChanged.AddListener(UpdateItemStats);
@@ -28,17 +29,9 @@ public class PlayerManager : CharacterManager
         {
             attackTimer -= Time.deltaTime;
         }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Attack();
-        }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Interact();
-        }
     }
 
-    private void Interact()
+    private void Interact() //may want to remove
     {
         {
             RaycastHit ray;
@@ -56,16 +49,9 @@ public class PlayerManager : CharacterManager
         // read inputs
         float hMove = CrossPlatformInputManager.GetAxis("Horizontal");
         float vMove = CrossPlatformInputManager.GetAxis("Vertical");
-        float hLook = CrossPlatformInputManager.GetAxis("HorizontalLook");
-        float vLook = CrossPlatformInputManager.GetAxis("VerticalLook");
-
-        if (hLook != 0 || vLook != 0)
-        {
-            m_LookAngle = Mathf.Atan2(hLook, vLook);
-        }
 
         // pass all parameters to the character control script
-        Move(new Vector2(hMove, vMove).normalized, m_LookAngle);
+        Move(new Vector2(hMove, vMove).normalized, Mathf.Atan2(hMove, vMove));
     }
 
     public void UpdateItemStats(int slot)

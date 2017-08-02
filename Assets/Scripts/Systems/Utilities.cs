@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 
 public static class Utilities{
-    public static int slotWidth = 60;
+    public static int slotWidth = 100;
 
-	public static List<Slot> CreateSlotGrid(RectTransform inventoryTransform, int count, InteractableType myType, List<Item> items = null)
+	public static List<Slot> CreateSlotGrid(RectTransform inventoryTransform, int count, WindowDataSourceType myType, List<Item> items = null)
     {
         int slotsSoFar = 0; //a running counter for how many slots have been used
         List<Slot> uiSlots = new List<Slot>();
@@ -29,5 +29,30 @@ public static class Utilities{
         inventoryTransform.offsetMax = new Vector2(0, 0);
         inventoryTransform.offsetMin = new Vector2(0, -i - centeringOffset * 2);
         return uiSlots;
+    }
+
+    public static WindowType dataSourceToWindowType(WindowDataSourceType input)
+    {
+        switch (input)
+        {
+            case (WindowDataSourceType.PaperDoll):
+                return WindowType.PaperDoll_Inventory;
+
+            case (WindowDataSourceType.Inventory):
+                return WindowType.PaperDoll_Inventory;
+
+            case (WindowDataSourceType.Character):
+                return WindowType.Character;
+
+            case (WindowDataSourceType.Loot):
+                return WindowType.Loot;
+
+            case (WindowDataSourceType.Shop):
+                return WindowType.Shop;
+
+            default:
+                Debug.LogWarning("Unknown window datasource type, returning PaperDoll_Inventory");
+                return WindowType.PaperDoll_Inventory;
+        }
     }
 }

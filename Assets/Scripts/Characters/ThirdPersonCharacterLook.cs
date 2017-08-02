@@ -86,7 +86,7 @@ public class ThirdPersonCharacterLook : MonoBehaviour
         // which DOES NOT affect the movement speed, since root motion is disabled.
         if(m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
-            m_Animator.speed = PlayerManager.playerManager.attackSpeed / 100f;
+            m_Animator.speed = 1.0f / gameObject.GetComponent<CharacterManager>().attackDelay;
         }
         else if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
         {

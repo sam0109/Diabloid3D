@@ -8,13 +8,13 @@ public class Shop : ItemHolder {
     new void Awake()
     {
         base.Awake();
-        myType = InteractableType.Shop;
+        myType = WindowDataSourceType.Shop;
     }
 
     public override bool CanPlace(Item item, int slot, ItemHolder source)
     {
         if (base.CanPlace(item, slot, source) &&
-            source.myType == InteractableType.Inventory &&
+            (source.myType == WindowDataSourceType.Inventory || source.myType == WindowDataSourceType.PaperDoll) &&
             items[slot].name == "")
         {
             return true;
@@ -31,13 +31,8 @@ public class Shop : ItemHolder {
         base.PlaceItem(item, slot, source);
     }
 
-    public void Interacted()
+    public void Touched()
     {
-        OpenPopup();
-    }
-
-    private void OnMouseDown()
-    {
-        Interacted();
+        WindowManager.windowManager.toggleWindowWithDataSource(this);
     }
 }

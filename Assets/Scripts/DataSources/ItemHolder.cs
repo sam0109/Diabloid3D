@@ -5,7 +5,7 @@ using UnityEngine.Events;
 [System.Serializable]
 public class SlotChanged : UnityEvent<int> { }
 
-public abstract class ItemHolder : Interactable {
+public abstract class ItemHolder : WindowDataSource {
     public int itemCount;
     public SlotChanged slotChanged;
     public List<Item> items;
